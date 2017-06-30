@@ -10,7 +10,6 @@ var config = require('../config');
 var webpackConfig = require('./webpack.prod.conf');
 
 console.log(process.env.NODE_ENV)
-console.log(process.env.npm_config_preview)
 
 var spinner = ora('building for ' + process.env.NODE_ENV + '...')
 spinner.start()
@@ -32,11 +31,11 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
         console.log(chalk.cyan('  Build complete.\n'))
         if(process.env.npm_config_preview){
             server.start({
-                port: 80,
+                port: 9528,
                 directory: './dist',
                 file: '/index.html'
             });
-            opn('http://kushnerpreview.wallstreetcn.com/')
+            console.log('> Listening at ' +  'http://localhost:9528' + '\n')
         }
     })
 })

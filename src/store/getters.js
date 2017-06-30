@@ -1,6 +1,6 @@
 const getters = {
   sidebar: state => state.app.sidebar,
-  livenewsChannels: state => state.app.livenewsChannels,
+  visitedViews: state => state.app.visitedViews,
   token: state => state.user.token,
   avatar: state => state.user.avatar,
   name: state => state.user.name,
@@ -10,6 +10,8 @@ const getters = {
   auth_type: state => state.user.auth_type,
   status: state => state.user.status,
   roles: state => state.user.roles,
-  setting: state => state.user.setting
+  setting: state => state.user.setting,
+  permission_routers: state => state.permission.routers,
+  addRouters: state => state.permission.addRouters
 };
 export default getters

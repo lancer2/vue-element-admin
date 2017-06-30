@@ -2,9 +2,6 @@
  * Created by jiachenpan on 16/11/18.
  */
 
- import showdown from 'showdown' // markdown转化
- const converter = new showdown.Converter();
-
  export function parseTime(time, cFormat) {
    if (arguments.length === 0) {
      return null;
@@ -61,8 +58,6 @@
  }
 
 // 格式化时间
-
-
  export function getQueryObject(url) {
    url = url == null ? window.location.href : url;
    const search = url.substring(url.lastIndexOf('?') + 1);
@@ -77,8 +72,6 @@
    });
    return obj;
  }
-
-
 
 
 /**
@@ -115,6 +108,11 @@
    })).join('&');
  }
 
+ export function param2Obj(url) {
+   const search = url.split('?')[1];
+   return JSON.parse('{"' + decodeURIComponent(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
+ }
+
  export function html2Text(val) {
    const div = document.createElement('div');
    div.innerHTML = val;
@@ -149,7 +147,6 @@
    if (duration <= 0) return;
    const difference = to - element.scrollTop;
    const perTick = difference / duration * 10;
-
    setTimeout(() => {
      console.log(new Date())
      element.scrollTop = element.scrollTop + perTick;
@@ -162,7 +159,6 @@
    if (!element || !className) {
      return;
    }
-
    let classString = element.className;
    const nameIndex = classString.indexOf(className);
    if (nameIndex === -1) {
@@ -216,6 +212,3 @@
    }
  }
 
- export function showdownMD(md) {
-   return converter.makeHtml(md)
- }

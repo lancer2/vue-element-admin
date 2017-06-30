@@ -9,7 +9,7 @@ const user = {
     code: '',
     uid: undefined,
     auth_type: '',
-    token: Cookies.get('X-Ivanka-Token'),
+    token: Cookies.get('Admin-Token'),
     name: '',
     avatar: '',
     introduction: '',
@@ -64,12 +64,13 @@ const user = {
   actions: {
     // 邮箱登录
     LoginByEmail({ commit }, userInfo) {
+      const email = userInfo.email.trim();
       return new Promise((resolve, reject) => {
-        loginByEmail(userInfo.email, userInfo.password).then(response => {
+        loginByEmail(email, userInfo.password).then(response => {
           const data = response.data;
-          Cookies.set('X-Ivanka-Token', response.data.token);
+          Cookies.set('Admin-Token', response.data.token);
           commit('SET_TOKEN', data.token);
-          commit('SET_EMAIL', userInfo.email);
+          commit('SET_EMAIL', email);
           resolve();
         }).catch(error => {
           reject(error);
@@ -78,7 +79,7 @@ const user = {
     },
 
 
-     // 获取用户信息
+    // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
@@ -86,6 +87,7 @@ const user = {
           commit('SET_ROLES', data.role);
           commit('SET_NAME', data.name);
           commit('SET_AVATAR', data.avatar);
+          commit('SET_UID', data.uid);
           commit('SET_INTRODUCTION', data.introduction);
           resolve(response);
         }).catch(error => {
@@ -100,7 +102,7 @@ const user = {
         commit('SET_CODE', code);
         loginByThirdparty(state.status, state.email, state.code, state.auth_type).then(response => {
           commit('SET_TOKEN', response.data.token);
-          Cookies.set('X-Ivanka-Token', response.data.token);
+          Cookies.set('Admin-Token', response.data.token);
           resolve();
         }).catch(error => {
           reject(error);
@@ -115,7 +117,7 @@ const user = {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '');
           commit('SET_ROLES', []);
-          Cookies.remove('X-Ivanka-Token');
+          Cookies.remove('Admin-Token');
           resolve();
         }).catch(error => {
           reject(error);
@@ -123,13 +125,23 @@ const user = {
       });
     },
 
-        // 前端 登出
+    // 前端 登出
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '');
-        Cookies.remove('X-Ivanka-Token');
+        Cookies.remove('Admin-Token');
         resolve();
       });
+    },
+
+    // 动态修改权限
+    ChangeRole({ commit }, role) {
+      return new Promise(resolve => {
+        commit('SET_ROLES', [role]);
+        commit('SET_TOKEN', role);
+        Cookies.set('Admin-Token', role);
+        resolve();
+      })
     }
   }
 };

@@ -1,6 +1,6 @@
 @import './btn.scss';
 @import './element-ui.scss';
-@import "./mixin.scss";
+@import './mixin.scss';
 body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -107,7 +107,6 @@ code {
 .pagination-container {
   margin-top: 30px;
 }
-
 
 .editor-container .CodeMirror {
   height: 100%!important;
@@ -219,6 +218,13 @@ code {
 
 .multiselect--active {
   z-index: 1000 !important;
+}
+
+//refine simplemde
+.simplemde-container{
+  .editor-toolbar.fullscreen,.CodeMirror-fullscreen{
+    z-index: 1003;
+  }
 }
 
 //暂时性解决diolag 问题 https://github.com/ElemeFE/element/issues/2461

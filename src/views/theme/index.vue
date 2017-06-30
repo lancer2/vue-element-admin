@@ -50,7 +50,7 @@ import { toggleClass } from 'utils';
 export default {
   data() {
     return {
-      theme: '',
+      theme: false,
       tags: [
           { name: '标签一', type: '' },
           { name: '标签二', type: 'gray' },
@@ -68,25 +68,22 @@ export default {
       toggleClass(document.body, 'custom-theme')
         //   this.$store.dispatch('setTheme', value);
     }
-  },
-  methods: {
-
   }
 };
 </script>
 
 <style scoped>
-.box-card{
-  width: 400px;
-  margin: 20px auto;
-}
-.block{
-  padding: 30px 24px;
-}
-.alert-item{
-  margin-bottom: 10px;
-}
-.tag-item{
-  margin-right: 15px;
-}
+  .box-card{
+    width: 400px;
+    margin: 20px auto;
+  }
+  .block{
+    padding: 30px 24px;
+  }
+  .alert-item{
+    margin-bottom: 10px;
+  }
+  .tag-item{
+    margin-right: 15px;
+  }
 </style>

@@ -1,24 +1,13 @@
 <template>
   <div class='tinymce-container editor-container'>
     <textarea class='tinymce-textarea' :id="id"></textarea>
-    <div class="editor-custom-btn-container">
-      <editorSlide v-if="customButton.indexOf('editorSlide')>=0" color="#3A71A8" class="editor-upload-btn" @successCBK="slideSuccessCBK"></editorSlide>
-      <editorAudio v-if="customButton.indexOf('editorAudio')>=0" color="#30B08F" class="editor-upload-btn" @successCBK="aduioSuccessCBK"></editorAudio>
-      <editorVideo v-if="customButton.indexOf('editorVideo')>=0" color="#E65D6E" class="editor-upload-btn" @successCBK="videoSuccessCBK"></editorVideo>
-       <editorImage v-if="customButton.indexOf('editorImage')>=0" color="#20a0ff" class="editor-upload-btn" @successCBK="imageSuccessCBK"></editorImage>
-    </div>
   </div>
 </template>
 
 <script>
-    import editorAudio from './components/editorAudio';
-    import editorVideo from './components/editorVideo';
-    import editorSlide from './components/editorSlide';
-    import editorImage from './components/editorImage';
-    import { getToken, upload } from 'api/qiniu';
+    // import { getToken, upload } from 'api/qiniu'; // 七牛
     export default {
       name: 'tinymce',
-      components: { editorImage, editorAudio, editorSlide, editorVideo },
       props: {
         id: {
           type: String,
@@ -27,13 +16,6 @@
         value: {
           type: String,
           default: ''
-        },
-        customButton: {
-          type: Array,
-          required: false,
-          default() {
-            return ['editorAudio', 'editorImage']
-          }
         },
         toolbar: {
           type: Array,
@@ -87,19 +69,17 @@
           imagetools_toolbar: 'watermark',
           default_link_target: '_blank',
           link_title: false,
-          textcolor_map: [
-            '1482f0', '1482f0',
-            '4595e6', '4595e6'],
           init_instance_callback: editor => {
             if (_this.value) {
               editor.setContent(_this.value)
             }
             _this.hasInit = true;
-            editor.on('Change', () => {
+            editor.on('NodeChange Change KeyUp', () => {
               this.hasChange = true;
               this.$emit('input', editor.getContent({ format: 'raw' }));
             });
           },
+          // 整合七牛上传
           // images_dataimg_filter(img) {
           //   setTimeout(() => {
           //     const $image = $(img);
@@ -149,7 +129,7 @@
               }
             });
             editor.addButton('p', {
-              title: '正文', // tooltip text seen on mouseover
+              title: '正文',
               text: '正文',
               onclick() {
                 editor.execCommand('mceToggleFormat', false, 'p');
@@ -165,53 +145,6 @@
             });
           }
         });
-      },
-      methods: {
-        imageSuccessCBK(arr) {
-          console.log(arr)
-          const _this = this;
-          arr.forEach(v => {
-            const node = document.createElement('img');
-            node.setAttribute('src', v);
-            node.onload = function() {
-              $(this).addClass('wscnph');
-              $(this).attr('data-wscntype', 'image');
-              $(this).attr('data-wscnh', this.height);
-              $(this).attr('data-wscnw', this.width);
-              tinymce.get(_this.id).insertContent(node.outerHTML)
-            }
-          })
-        },
-        slideSuccessCBK(arr) {
-          const node = document.createElement('img');
-          node.setAttribute('data-wscntype', 'slide');
-          node.setAttribute('data-uri', arr.toString());
-          node.setAttribute('data-wscnh', '190');
-          node.setAttribute('data-wscnw', '200');
-          node.setAttribute('src', ' https://wdl.wallstreetcn.com/6410b47d-a54c-4826-9bc1-c3e5df31280c');
-          node.className = 'wscnph editor-placeholder';
-          tinymce.get(this.id).insertContent(node.outerHTML)
-        },
-        videoSuccessCBK(form) {
-          const node = document.createElement('img');
-          node.setAttribute('data-wscntype', 'video');
-          node.setAttribute('data-uri', form.url);
-          node.setAttribute('data-cover-img-uri', form.image);
-          node.setAttribute('data-title', form.title);
-          node.setAttribute('src', 'https://wdl.wallstreetcn.com/07aeb3e7-f4ca-4207-befb-c987b3dc7011');
-          node.className = 'wscnph editor-placeholder';
-          tinymce.get(this.id).insertContent(node.outerHTML)
-        },
-        aduioSuccessCBK(form) {
-          const node = document.createElement('img');
-          node.setAttribute('data-wscntype', 'audio');
-          node.setAttribute('data-uri', form.url);
-          node.setAttribute('data-title', form.title);
-          node.setAttribute('data-text', form.text);
-          node.setAttribute('src', 'https://wdl.wallstreetcn.com/2ed0c8c8-fb82-499d-b81c-3fd1de114eae');
-          node.className = 'wscnph editor-placeholder';
-          tinymce.get(this.id).insertContent(node.outerHTML)
-        }
       },
       destroyed() {
         tinymce.get(this.id).destroy();
@@ -232,7 +165,6 @@
 .editor-custom-btn-container {
   position: absolute;
   right: 15px;
-  /*z-index: 2005;*/
   top: 18px;
 }
 

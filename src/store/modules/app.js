@@ -6,7 +6,8 @@ const app = {
       opened: !+Cookies.get('sidebarStatus')
     },
     theme: 'default',
-    livenewsChannels: Cookies.get('livenewsChannels') || '[]'
+    livenewsChannels: Cookies.get('livenewsChannels') || '[]',
+    visitedViews: []
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
@@ -17,20 +18,24 @@ const app = {
       }
       state.sidebar.opened = !state.sidebar.opened;
     },
-    SET_LIVENEWS_CHANNELS: (status, channels) => {
-      status.livenewsChannels = JSON.stringify(channels);
-      Cookies.set('livenewsChannels', JSON.stringify(channels));
+    ADD_VISITED_VIEWS: (state, view) => {
+      if (state.visitedViews.includes(view)) return
+      state.visitedViews.push(view)
+    },
+    DEL_VISITED_VIEWS: (state, view) => {
+      const index = state.visitedViews.indexOf(view)
+      state.visitedViews.splice(index, 1)
     }
   },
   actions: {
     ToggleSideBar: ({ commit }) => {
       commit('TOGGLE_SIDEBAR')
     },
-    setTheme: ({ commit }, theme) => {
-      commit('SET_THEME', theme)
+    addVisitedViews: ({ commit }, view) => {
+      commit('ADD_VISITED_VIEWS', view)
     },
-    setlivenewsChannels: ({ commit }, channels) => {
-      commit('SET_LIVENEWS_CHANNELS', channels)
+    delVisitedViews: ({ commit }, view) => {
+      commit('DEL_VISITED_VIEWS', view)
     }
   }
 };
